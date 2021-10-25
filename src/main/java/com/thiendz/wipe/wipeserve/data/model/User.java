@@ -1,23 +1,32 @@
-package com.thiendz.wipe.wipeserve.services.impl;
+package com.thiendz.wipe.wipeserve.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.thiendz.wipe.wipeserve.utils.enums.UserStatus;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @ToString
-public class UserDetailsImpl implements UserDetails {
-    private String username;
-    private String password;
+@Builder
+public class User extends Base implements UserDetails {
+    @Column(unique = true)
+    String username;
+    String password;
+    @Column(unique = true)
+    String email;
+    @Column(unique = true)
+    String phoneNumber;
+    @Enumerated(EnumType.STRING)
+    UserStatus status;
 
     @Override
+    @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
@@ -33,21 +42,25 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
+    @Transient
     public boolean isAccountNonExpired() {
         return false;
     }
 
     @Override
+    @Transient
     public boolean isAccountNonLocked() {
         return false;
     }
 
     @Override
+    @Transient
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
     @Override
+    @Transient
     public boolean isEnabled() {
         return false;
     }

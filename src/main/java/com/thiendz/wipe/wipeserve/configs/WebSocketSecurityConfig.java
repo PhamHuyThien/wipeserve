@@ -1,4 +1,4 @@
-package com.thiendz.wipe.wipeserve.config;
+package com.thiendz.wipe.wipeserve.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;

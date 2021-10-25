@@ -1,7 +1,6 @@
-package com.thiendz.wipe.wipeserve.config;
+package com.thiendz.wipe.wipeserve.configs;
 
 import com.thiendz.wipe.wipeserve.authentications.JwtTokenProvider;
-import com.thiendz.wipe.wipeserve.services.impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
