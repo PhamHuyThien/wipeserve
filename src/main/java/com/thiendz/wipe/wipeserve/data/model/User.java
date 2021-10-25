@@ -20,8 +20,6 @@ public class User extends Base implements UserDetails {
     String password;
     @Column(unique = true)
     String email;
-    @Column(unique = true)
-    String phoneNumber;
     @Enumerated(EnumType.STRING)
     UserStatus status;
 

@@ -48,19 +48,15 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public Void register(RegisterRequest registerRequest) {
-        if (!userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.AUTH_USERNAME_IS_EXISTS);
         }
-        if (!userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.AUTH_EMAIL_IS_EXISTS);
-        }
-        if (!userRepository.findByPhoneNumber(registerRequest.getPhoneNumber()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.AUTH_PHONE_NUMBER_IS_EXISTS);
         }
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
-                .phoneNumber(registerRequest.getPhoneNumber())
                 .password(registerRequest.getPassword())
                 .status(UserStatus.DEACTIVE)
                 .build();

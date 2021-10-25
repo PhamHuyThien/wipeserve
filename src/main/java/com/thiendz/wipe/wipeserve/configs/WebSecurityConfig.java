@@ -29,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers(
-                        "/auth/**",
+                        "/api/v1/auth/**",
                         "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs",
                         "/ws/**", "/ws",
                         "/files/*.*"

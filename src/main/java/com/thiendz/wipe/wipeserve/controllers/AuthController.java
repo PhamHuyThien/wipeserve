@@ -9,6 +9,7 @@ import com.thiendz.wipe.wipeserve.utils.constant.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,10 +19,12 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+    @PostMapping("/login")
     public ResponseEntity<Response<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, authService.login(loginRequest)));
     }
 
+    @PostMapping("/register")
     public ResponseEntity<Response<Void>> register(@RequestBody RegisterRequest registerRequest){
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, authService.register(registerRequest)));
     }
