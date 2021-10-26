@@ -19,29 +19,35 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/friends")
-public class FriendController {
+public class FriendController extends BaseController {
     @Autowired
     FriendsService friendsService;
 
     @GetMapping("/search-friend")
     public ResponseEntity<Response<List<SearchFriendResponse>>> searchFriend(@RequestParam String search) {
-        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.searchFriend(search)));
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.searchFriend(search, getUser())));
     }
 
     @MessageMapping("/{token}/list-friend-request")
     @SendTo("/messages/{token}")
     public SocketResponse<List<UserInfoResponse>> listFriendRequest() {
-        return friendsService.listFriendRequest();
+        return friendsService.listFriendRequest(getUser());
+    }
+
+    @MessageMapping("/{token}/list-friend")
+    @SendTo("/messages/{token}")
+    public SocketResponse<List<UserInfoResponse>> listFriend() {
+        return friendsService.listFriend(getUser());
     }
 
     @PostMapping("/send-friend")
     public ResponseEntity<Response<Void>> send(@RequestBody SendFriendRequest sendFriendRequest) {
-        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.addFriend(sendFriendRequest)));
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.addFriend(sendFriendRequest, getUser())));
     }
 
     @PostMapping("/accept-friend")
-    public ResponseEntity<Response<Void>> acceptFriend(@RequestBody AcceptFriendRequest acceptFriendRequest){
-        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.acceptFriend(acceptFriendRequest)));
+    public ResponseEntity<Response<Void>> acceptFriend(@RequestBody AcceptFriendRequest acceptFriendRequest) {
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.acceptFriend(acceptFriendRequest, getUser())));
     }
 
 }

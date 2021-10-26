@@ -12,13 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class UserController {
+public class UserController extends BaseController {
     @Autowired
     UserService userService;
 
     @MessageMapping("/{token}/user-info")
     @SendTo("/messages/{token}")
     public SocketResponse<UserInfoResponse> getUserInfo() {
-        return userService.getUserInfo();
+        return userService.getUserInfo(getUser());
     }
 }

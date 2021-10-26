@@ -1,4 +1,4 @@
-package com.thiendz.wipe.wipeserve.services;
+package com.thiendz.wipe.wipeserve.controllers;
 
 import com.thiendz.wipe.wipeserve.data.model.User;
 import com.thiendz.wipe.wipeserve.utils.constant.Message;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
-public class BaseService {
+public class BaseController {
     public User getUser() {
         Object objectUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (objectUser == null || !(objectUser instanceof User)) {

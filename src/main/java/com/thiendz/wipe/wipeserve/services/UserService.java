@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService extends BaseService {
+public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public SocketResponse<UserInfoResponse> getUserInfo() {
+    public SocketResponse<UserInfoResponse> getUserInfo(User user) {
         SocketResponse<UserInfoResponse> userInfoResponseSocketResponse = new SocketResponse<>(Message.SUCCESS, SocketType.USER_INFO);
-        User user = getUser();
         UserInfoResponse userInfoResponse = userRepository.getByUserInfo(user.getId()).orElse(null);
         if (userInfoResponse == null) {
             userInfoResponseSocketResponse.setMessage(Message.USER_NOT_EXISTS);

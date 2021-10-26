@@ -75,8 +75,8 @@ public class AuthService implements UserDetailsService {
                 .address("Sao Hỏa")
                 .avatar(avatar)
                 .cover(cover)
-                .firstName("It")
-                .lastName("Me")
+                .firstName(registerRequest.getFirstName())
+                .lastName(registerRequest.getLastName())
                 .user(user)
                 .build();
         profileRepository.save(profile);

@@ -1,5 +1,5 @@
 package com.thiendz.wipe.wipeserve.utils.enums;
 
 public enum SocketType {
-    USER_INFO, LIST_FRIEND_REQUEST
+    USER_INFO, LIST_FRIEND_REQUEST, LIST_FRIEND
 }
