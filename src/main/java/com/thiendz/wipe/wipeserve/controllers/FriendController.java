@@ -55,4 +55,9 @@ public class FriendController extends BaseController {
     public ResponseEntity<Response<Void>> unfriend(@RequestParam Long userId) {
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.unfriend(userId, getUser())));
     }
+
+    @GetMapping("/search-friend-accept")
+    public ResponseEntity<Response<List<SearchFriendResponse>>> searchFriendAccept(@RequestParam String search) {
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.searchFriendAccept(search, getUser())));
+    }
 }

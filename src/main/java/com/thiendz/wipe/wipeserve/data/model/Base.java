@@ -21,10 +21,7 @@ public abstract class Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @JsonFormat(pattern = "dd/MM/yyyy H:i:s")
-    Date createAt;
-    @JsonFormat(pattern = "dd/MM/yyyy H:i:s")
-    Date updateAt;
-    @JsonFormat(pattern = "dd/MM/yyyy H:i:s")
-    Date deleteAt;
+    Long createAt;
+    Long updateAt;
+    Long deleteAt;
 }

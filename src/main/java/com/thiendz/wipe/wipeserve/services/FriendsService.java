@@ -1,6 +1,5 @@
 package com.thiendz.wipe.wipeserve.services;
 
-import com.thiendz.wipe.wipeserve.controllers.BaseController;
 import com.thiendz.wipe.wipeserve.data.model.Friend;
 import com.thiendz.wipe.wipeserve.data.model.Profile;
 import com.thiendz.wipe.wipeserve.data.model.User;
@@ -9,7 +8,6 @@ import com.thiendz.wipe.wipeserve.data.repository.jpa.ProfileRepository;
 import com.thiendz.wipe.wipeserve.data.repository.jpa.UserRepository;
 import com.thiendz.wipe.wipeserve.dto.request.AcceptFriendRequest;
 import com.thiendz.wipe.wipeserve.dto.request.SendFriendRequest;
-import com.thiendz.wipe.wipeserve.dto.request.UnfriendRequest;
 import com.thiendz.wipe.wipeserve.dto.response.SearchFriendResponse;
 import com.thiendz.wipe.wipeserve.dto.response.SocketResponse;
 import com.thiendz.wipe.wipeserve.dto.response.UserInfoResponse;
@@ -72,7 +70,7 @@ public class FriendsService {
         }
 
         Friend friend = new Friend(user, userRepository.findById(sendFriendRequest.getUserId()).orElse(null), FriendStatus.SEENDING, null);
-        friend.setCreateAt(DateUtils.currentDate());
+        friend.setCreateAt(DateUtils.currentLongTime());
         friendRepository.save(friend);
         simpMessagingTemplate.convertAndSend(DestinationUtils.getDestinationOfConvertAndSend(friend.getReceiver()), listFriendRequest(friend.getReceiver()));
         return null;
@@ -102,7 +100,7 @@ public class FriendsService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.FRIEND_USER_NOT_SEENDING);
         }
         Friend friend = optionalFriend.get();
-        friend.setUpdateAt(DateUtils.currentDate());
+        friend.setUpdateAt(DateUtils.currentLongTime());
         friend.setStatus(FriendStatus.FRIEND);
         friendRepository.save(friend);
         simpMessagingTemplate.convertAndSend(DestinationUtils.getDestinationOfConvertAndSend(friend.getSender()), listFriend(friend.getSender()));
@@ -135,5 +133,14 @@ public class FriendsService {
         friendRepository.delete(optionalFriend.get());
         simpMessagingTemplate.convertAndSend(DestinationUtils.getDestinationOfConvertAndSend(u), listFriend(u));
         return null;
+    }
+
+    public List<SearchFriendResponse> searchFriendAccept(String search, User user) {
+        return searchFriend(search, user)
+                .stream()
+                .filter(searchFriendResponse ->
+                        searchFriendResponse.getStatus() != null &&
+                                searchFriendResponse.getStatus().equals(FriendStatus.FRIEND)
+                ).collect(Collectors.toList());
     }
 }

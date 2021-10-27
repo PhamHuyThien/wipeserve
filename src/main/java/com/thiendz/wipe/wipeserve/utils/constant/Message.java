@@ -15,4 +15,8 @@ public class Message {
 
     public static final String FRIEND_IS_EXISTS = "Bạn hoặc người này đã gửi lời mời kết bạn rồi.";
     public static final String FRIEND_USER_NOT_SEENDING = "Người này không gửi lời mời cho bạn.";
+
+    public static final String MESSAGES_CONVERSATION_NAME_NOT_EMPTY = "Tên cuộc trò chuyện không được để trống.";
+    public static final String MESSAGES_CONVERSATION_NOT_EXISTS = "Cuộc trò chuyện này không tồn tại.";
+
 }
