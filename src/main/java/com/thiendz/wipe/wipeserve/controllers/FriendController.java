@@ -2,6 +2,7 @@ package com.thiendz.wipe.wipeserve.controllers;
 
 import com.thiendz.wipe.wipeserve.dto.request.AcceptFriendRequest;
 import com.thiendz.wipe.wipeserve.dto.request.SendFriendRequest;
+import com.thiendz.wipe.wipeserve.dto.request.UnfriendRequest;
 import com.thiendz.wipe.wipeserve.dto.response.Response;
 import com.thiendz.wipe.wipeserve.dto.response.SearchFriendResponse;
 import com.thiendz.wipe.wipeserve.dto.response.SocketResponse;
@@ -50,4 +51,8 @@ public class FriendController extends BaseController {
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.acceptFriend(acceptFriendRequest, getUser())));
     }
 
+    @DeleteMapping("/unfriend")
+    public ResponseEntity<Response<Void>> unfriend(@RequestParam Long userId) {
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, friendsService.unfriend(userId, getUser())));
+    }
 }

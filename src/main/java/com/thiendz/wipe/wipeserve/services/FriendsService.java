@@ -9,6 +9,7 @@ import com.thiendz.wipe.wipeserve.data.repository.jpa.ProfileRepository;
 import com.thiendz.wipe.wipeserve.data.repository.jpa.UserRepository;
 import com.thiendz.wipe.wipeserve.dto.request.AcceptFriendRequest;
 import com.thiendz.wipe.wipeserve.dto.request.SendFriendRequest;
+import com.thiendz.wipe.wipeserve.dto.request.UnfriendRequest;
 import com.thiendz.wipe.wipeserve.dto.response.SearchFriendResponse;
 import com.thiendz.wipe.wipeserve.dto.response.SocketResponse;
 import com.thiendz.wipe.wipeserve.dto.response.UserInfoResponse;
@@ -111,14 +112,28 @@ public class FriendsService {
     public SocketResponse<List<UserInfoResponse>> listFriend(User user) {
         List<Friend> friendList = friendRepository.findBySenderOrReceiverAndStatus(user.getId());
         List<UserInfoResponse> userInfoResponseList = friendList.stream().map(friend -> {
-            User u = friend.getSender();
+            User friendAccept = friend.getSender().equals(user) ? friend.getReceiver() : friend.getSender();
             return UserInfoResponse.builder()
-                    .id(u.getId())
-                    .username(u.getUsername())
-                    .email(u.getEmail())
-                    .profile(profileRepository.findByUser(user).orElse(null))
+                    .id(friendAccept.getId())
+                    .username(friendAccept.getUsername())
+                    .email(friendAccept.getEmail())
+                    .profile(profileRepository.findByUser(friendAccept).orElse(null))
                     .build();
         }).collect(Collectors.toList());
         return new SocketResponse<>(true, Message.SUCCESS, userInfoResponseList, SocketType.LIST_FRIEND);
+    }
+
+    public Void unfriend(Long userId, User user) {
+        User u = userRepository.findById(userId).orElse(null);
+        if (u == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.USER_NOT_EXISTS);
+        }
+        Optional<Friend> optionalFriend = friendRepository.findBySenderOrReceiver(user.getId(), u.getId());
+        if (!optionalFriend.isPresent() || optionalFriend.get().getStatus() == FriendStatus.BLOCK) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.FRIEND_USER_NOT_SEENDING);
+        }
+        friendRepository.delete(optionalFriend.get());
+        simpMessagingTemplate.convertAndSend(DestinationUtils.getDestinationOfConvertAndSend(u), listFriend(u));
+        return null;
     }
 }
