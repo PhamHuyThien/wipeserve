@@ -13,6 +13,6 @@ public interface MessagesRepository extends JpaRepository<Messages, Long> {
             "JOIN Conversation con ON mess.conversation = con " +
             "JOIN Participants par ON par.conversation = con " +
             "JOIN User user ON par.user = user " +
-            "WHERE user.id = ?1 AND con.id = ?2 AND mess.deleteAt IS NULL ")
+            "WHERE user.id = ?1 AND con.id = ?2 AND mess.deleteAt IS NULL ORDER BY mess.createAt DESC ")
     List<Messages> findAllByUserAndConversation(Long userId, Long conversationId);
 }

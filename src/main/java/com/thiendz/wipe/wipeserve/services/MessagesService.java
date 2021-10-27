@@ -102,22 +102,24 @@ public class MessagesService {
         return listSocketResponse;
     }
 
+    @Transactional
     public SocketResponse<List<MessagesResponse>> listMessages(MessagesConversationRequest messagesConversationRequest, User user) {
         SocketResponse<List<MessagesResponse>> listSocketResponse = new SocketResponse<>(true, Message.SUCCESS, SocketType.LIST_MESSAGES);
-        if(!conversationRepository.findById(messagesConversationRequest.getConversationId()).isPresent()) {
+        if (!conversationRepository.findById(messagesConversationRequest.getConversationId()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.MESSAGES_CONVERSATION_NOT_EXISTS);
         }
         List<Messages> messagesList = messagesRepository.findAllByUserAndConversation(user.getId(), messagesConversationRequest.getConversationId());
         List<MessagesResponse> messagesResponseList = messagesList.stream().map(messages -> {
-            User u = messages.getUser();
-            messages.setUser(null);
             MessagesResponse messagesResponse = new MessagesResponse();
             messagesResponse.setMessages(messages);
-            messagesResponse.setUserInfoResponse(userRepository.getByUserInfo(u.getId()).orElse(null));
+            messagesResponse.setUserInfoResponse(userRepository.getByUserInfo(messages.getUser().getId()).orElse(null));
             messagesResponse.setAttachments(messagesFileRepository.findAllByMessages(messages.getId()).orElse(new ArrayList<>()).stream().map(messageFile -> messageFile.getFile()).collect(Collectors.toList()));
             return messagesResponse;
         }).collect(Collectors.toList());
         listSocketResponse.setData(messagesResponseList);
+        Participants participants = participantsRepository.findByConversationAndUser(messagesConversationRequest.getConversationId(), user.getId()).orElse(null);
+        if (participants != null) {
+        }
         return listSocketResponse;
     }
 }

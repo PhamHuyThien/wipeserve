@@ -1,5 +1,6 @@
 package com.thiendz.wipe.wipeserve.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Profile extends Base {
     String address;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", unique = true)
     User user;
 

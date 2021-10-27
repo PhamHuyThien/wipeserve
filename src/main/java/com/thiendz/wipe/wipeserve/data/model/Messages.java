@@ -31,6 +31,7 @@ public class Messages extends Base {
     Conversation conversation;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     User user;
 }

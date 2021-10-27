@@ -43,4 +43,10 @@ public class MessagesController extends BaseController {
     public SocketResponse<List<MessagesResponse>> listMessages(@Payload MessagesConversationRequest messagesConversationRequest) {
         return messagesService.listMessages(messagesConversationRequest, getUser());
     }
+
+    @MessageMapping("/{token}/send-messages")
+    @SendTo("/messages/{token}")
+    public SocketResponse<List<MessagesResponse>> sendMessages(@Payload MessagesConversationRequest messagesConversationRequest) {
+        return messagesService.listMessages(messagesConversationRequest, getUser());
+    }
 }
