@@ -18,5 +18,6 @@ public class Message {
 
     public static final String MESSAGES_CONVERSATION_NAME_NOT_EMPTY = "Tên cuộc trò chuyện không được để trống.";
     public static final String MESSAGES_CONVERSATION_NOT_EXISTS = "Cuộc trò chuyện này không tồn tại.";
+    public static final String MESSAGES_CONTENT_NOT_NULL = "Tin nhắn không được để trống.";
 
 }

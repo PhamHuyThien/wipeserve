@@ -1,6 +1,7 @@
 package com.thiendz.wipe.wipeserve.dto.response;
 
 import com.thiendz.wipe.wipeserve.utils.enums.SocketType;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

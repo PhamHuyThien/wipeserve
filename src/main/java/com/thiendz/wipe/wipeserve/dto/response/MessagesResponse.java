@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 @Builder
 public class MessagesResponse {
-    UserInfoResponse userInfoResponse;
+    UserInfoResponse user;
     Messages messages;
     List<File> attachments;
 }

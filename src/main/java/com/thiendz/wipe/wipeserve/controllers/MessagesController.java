@@ -3,6 +3,7 @@ package com.thiendz.wipe.wipeserve.controllers;
 import com.thiendz.wipe.wipeserve.data.model.Conversation;
 import com.thiendz.wipe.wipeserve.dto.request.MessagesConversationRequest;
 import com.thiendz.wipe.wipeserve.dto.request.MessagesCreateConversationRequest;
+import com.thiendz.wipe.wipeserve.dto.request.MessagesSendRequest;
 import com.thiendz.wipe.wipeserve.dto.response.MessagesConversationResponse;
 import com.thiendz.wipe.wipeserve.dto.response.MessagesResponse;
 import com.thiendz.wipe.wipeserve.dto.response.Response;
@@ -15,9 +16,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +29,11 @@ public class MessagesController extends BaseController {
     @PostMapping("/create-conversation")
     public ResponseEntity<Response<Void>> createConversation(@RequestBody MessagesCreateConversationRequest messagesCreateConversationRequest) {
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, messagesService.createConversation(messagesCreateConversationRequest, getUser())));
+    }
+
+    @GetMapping("/search-conversation")
+    public ResponseEntity<Response<MessagesConversationResponse>> searchConversation(@RequestParam String search){
+        return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, messagesService.searchConversation(search, getUser())));
     }
 
     @MessageMapping("/{token}/list-conversation")
@@ -46,7 +50,7 @@ public class MessagesController extends BaseController {
 
     @MessageMapping("/{token}/send-messages")
     @SendTo("/messages/{token}")
-    public SocketResponse<List<MessagesResponse>> sendMessages(@Payload MessagesConversationRequest messagesConversationRequest) {
-        return messagesService.listMessages(messagesConversationRequest, getUser());
+    public SocketResponse<MessagesResponse> sendMessages(@Payload MessagesSendRequest messagesSendRequest) {
+        return messagesService.sendMessages(messagesSendRequest, getUser());
     }
 }
