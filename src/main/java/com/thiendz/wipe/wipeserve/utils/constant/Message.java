@@ -12,6 +12,9 @@ public class Message {
     public static final String AUTH_TOKEN_EXPIRED = "Token không đúng hoặc hết hạn.";
 
     public static final String USER_NOT_EXISTS = "Tài khoản không tồn tại.";
+    public static final String USER_FIRSTNAME_NOT_EMPTY = "Tên không được để trống.";
+    public static final String USER_LASTNAME_NOT_EMPTY = "Họ không được để trống.";
+    public static final String USER_EMAIL_NOT_EMPTY = "Email không được để trống.";
 
     public static final String FRIEND_IS_EXISTS = "Bạn hoặc người này đã gửi lời mời kết bạn rồi.";
     public static final String FRIEND_USER_NOT_SEENDING = "Người này không gửi lời mời cho bạn.";

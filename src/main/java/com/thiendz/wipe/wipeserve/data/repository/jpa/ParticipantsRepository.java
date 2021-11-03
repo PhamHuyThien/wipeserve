@@ -16,4 +16,8 @@ public interface ParticipantsRepository extends JpaRepository<Participants, Long
     Optional<Participants> findByConversationAndUser(Long conversationId, Long userId);
 
     List<Participants> findAllByConversation(Conversation conversation);
+
+    @Query("SELECT COUNT(p) FROM Participants p " +
+            "WHERE p.user.id = ?1")
+    Long countByUser(Long userId);
 }

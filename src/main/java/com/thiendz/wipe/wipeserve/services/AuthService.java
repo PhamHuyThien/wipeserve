@@ -4,9 +4,7 @@ import com.thiendz.wipe.wipeserve.authentications.JwtTokenProvider;
 import com.thiendz.wipe.wipeserve.data.model.File;
 import com.thiendz.wipe.wipeserve.data.model.Profile;
 import com.thiendz.wipe.wipeserve.data.model.User;
-import com.thiendz.wipe.wipeserve.data.repository.jpa.FileRepository;
-import com.thiendz.wipe.wipeserve.data.repository.jpa.ProfileRepository;
-import com.thiendz.wipe.wipeserve.data.repository.jpa.UserRepository;
+import com.thiendz.wipe.wipeserve.data.repository.jpa.*;
 import com.thiendz.wipe.wipeserve.dto.request.CheckTokenRequest;
 import com.thiendz.wipe.wipeserve.dto.request.LoginRequest;
 import com.thiendz.wipe.wipeserve.dto.request.RegisterRequest;
@@ -24,6 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class AuthService implements UserDetailsService {
     @Autowired
@@ -32,6 +33,10 @@ public class AuthService implements UserDetailsService {
     ProfileRepository profileRepository;
     @Autowired
     FileRepository fileRepository;
+    @Autowired
+    FriendRepository friendRepository;
+    @Autowired
+    ParticipantsRepository participantsRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -68,7 +73,7 @@ public class AuthService implements UserDetailsService {
                 .build();
         user = userRepository.save(user);
         File cover = new File("https://i.pinimg.com/originals/ff/e2/a4/ffe2a43077f02a4723d207a34705513e.png", "Ảnh bìa mặc định", "png", 0);
-        File avatar = new File("https://freenice.net/wp-content/uploads/2021/08/Anh-avatar-dep-facebook-zalo-cho-nu.jpg", "Ảnh đại diện mặc định", "jpg", 0);
+        File avatar = new File("https://scr.vn/wp-content/uploads/2020/07/%E1%BA%A2nh-%C4%91%E1%BA%A1i-di%E1%BB%87n-Facebook-m%E1%BA%B7c-%C4%91%E1%BB%8Bnh-%C4%91%E1%BB%99c-%C4%91%C3%A1o-1024x1024.jpg", "Ảnh đại diện mặc định", "jpg", 0);
         cover = fileRepository.save(cover);
         avatar = fileRepository.save(avatar);
         Profile profile = Profile.builder()
@@ -91,7 +96,11 @@ public class AuthService implements UserDetailsService {
             if (user == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, Message.USER_NOT_EXISTS);
             }
-            return userRepository.getByUserInfo(user.getId()).orElse(null);
+            UserInfoResponse userInfoResponse = userRepository.getByUserInfo(user.getId()).orElse(null);
+            userInfoResponse.setTotalFriend(friendRepository.countBySenderOrReceiver(user.getId()));
+            userInfoResponse.setTotalConversation(participantsRepository.countByUser(user.getId()));
+            HashMap
+            return userInfoResponse;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.AUTH_TOKEN_EXPIRED);
         }

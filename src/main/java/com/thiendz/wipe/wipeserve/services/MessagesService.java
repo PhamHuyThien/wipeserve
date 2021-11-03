@@ -8,7 +8,6 @@ import com.thiendz.wipe.wipeserve.dto.request.MessagesSendRequest;
 import com.thiendz.wipe.wipeserve.dto.request.PageRequest;
 import com.thiendz.wipe.wipeserve.dto.response.MessagesConversationResponse;
 import com.thiendz.wipe.wipeserve.dto.response.MessagesResponse;
-import com.thiendz.wipe.wipeserve.dto.response.Response;
 import com.thiendz.wipe.wipeserve.dto.response.SocketResponse;
 import com.thiendz.wipe.wipeserve.utils.DateUtils;
 import com.thiendz.wipe.wipeserve.utils.DestinationUtils;
@@ -17,8 +16,8 @@ import com.thiendz.wipe.wipeserve.utils.PageUtils;
 import com.thiendz.wipe.wipeserve.utils.constant.Message;
 import com.thiendz.wipe.wipeserve.utils.enums.SocketType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,19 +90,8 @@ public class MessagesService {
     public SocketResponse<List<MessagesConversationResponse>> listConversation(User user) {
         SocketResponse<List<MessagesConversationResponse>> listSocketResponse = new SocketResponse<>(Message.SUCCESS, SocketType.LIST_CONVERSATION);
         List<Object[]> objectsList = conversationRepository.findAllByConversation(user.getId());
-        List<MessagesConversationResponse> messagesConversationResponseList = objectsList.stream().map(objects ->
-                MessagesConversationResponse.builder()
-                        .id(NumberUtils.parseLong(objects[0]))
-                        .name(objects[1].toString())
-                        .newMessages(messagesRepository.findById(NumberUtils.parseLong(objects[2], -1L)).orElse(null))
-                        .lastMessages(messagesRepository.findById(NumberUtils.parseLong(objects[3], -1L)).orElse(null))
-                        .image(fileRepository.findById(NumberUtils.parseLong(objects[4], -1L)).orElse(null))
-                        .createAt(NumberUtils.parseLong(objects[5]))
-                        .updateAt(NumberUtils.parseLong(objects[6]))
-                        .build()
-        ).collect(Collectors.toList());
+        listSocketResponse.setData(parseFindAllByConversation(objectsList));
         listSocketResponse.setStatus(true);
-        listSocketResponse.setData(messagesConversationResponseList);
         return listSocketResponse;
     }
 
@@ -114,7 +102,7 @@ public class MessagesService {
             listSocketResponse.setMessage(Message.MESSAGES_CONVERSATION_NOT_EXISTS);
             return listSocketResponse;
         }
-        List<Messages> messagesList = messagesRepository.findAllByUserAndConversation(user.getId(), messagesConversationRequest.getConversationId(), PageUtils.toPageable(new PageRequest()));
+        Page<Messages> messagesList = messagesRepository.findAllByUserAndConversation(user.getId(), messagesConversationRequest.getConversationId(), PageUtils.toPageable(new PageRequest()));
         List<MessagesResponse> messagesResponseList = messagesList.stream().map(messages -> {
             MessagesResponse messagesResponse = new MessagesResponse();
             messagesResponse.setMessages(messages);
@@ -130,7 +118,7 @@ public class MessagesService {
         listSocketResponse.setData(messagesResponseList);
         Participants participants = participantsRepository.findByConversationAndUser(messagesConversationRequest.getConversationId(), user.getId()).orElse(null);
         if (participants != null) {
-            participants.setLastMessages(!messagesList.isEmpty() ? messagesList.get(0) : null);
+            participants.setLastMessages(!messagesList.isEmpty() ? messagesList.toList().get(0) : null);
             participantsRepository.save(participants);
         }
         return listSocketResponse;
@@ -195,7 +183,22 @@ public class MessagesService {
         return messagesResponseSocketResponse;
     }
 
-    public MessagesConversationResponse searchConversation(String search, User user) {
-        return null;
+    public List<MessagesConversationResponse> searchConversation(String search, User user) {
+        List<Object[]> objectsList = conversationRepository.findAllByConversation(user.getId(), "%" + search + "%");
+        return parseFindAllByConversation(objectsList);
+    }
+
+    private List<MessagesConversationResponse> parseFindAllByConversation(List<Object[]> objectsList) {
+        return objectsList.stream().map(objects ->
+                MessagesConversationResponse.builder()
+                        .id(NumberUtils.parseLong(objects[0]))
+                        .name(objects[1].toString())
+                        .newMessages(messagesRepository.findById(NumberUtils.parseLong(objects[2], -1L)).orElse(null))
+                        .lastMessages(messagesRepository.findById(NumberUtils.parseLong(objects[3], -1L)).orElse(null))
+                        .image(fileRepository.findById(NumberUtils.parseLong(objects[4], -1L)).orElse(null))
+                        .createAt(NumberUtils.parseLong(objects[5]))
+                        .updateAt(NumberUtils.parseLong(objects[6]))
+                        .build()
+        ).collect(Collectors.toList());
     }
 }

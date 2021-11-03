@@ -23,4 +23,8 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("SELECT f FROM Friend f " +
             "WHERE f.sender.id = ?2 AND f.receiver.id = ?1 ")
     Optional<Friend> findBySenderEqualsAndReceiverEquals(Long userId, Long userYouId);
+
+    @Query("SELECT count(f) FROM Friend f " +
+            "WHERE (f.sender.id = ?1 OR f.receiver = ?1) AND f.status='FRIEND'")
+    Long countBySenderOrReceiver(Long userId);
 }

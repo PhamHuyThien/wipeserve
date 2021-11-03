@@ -12,5 +12,14 @@ public class UserInfoResponse {
     Long id;
     String username;
     String email;
+    Long totalFriend;
+    Long totalConversation;
     Profile profile;
+
+    public UserInfoResponse(Long id, String username, String email, Profile profile) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.profile = profile;
+    }
 }

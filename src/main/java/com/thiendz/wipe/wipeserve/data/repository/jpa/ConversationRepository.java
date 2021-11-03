@@ -16,4 +16,11 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
             "JOIN participants p on c.id = p.conversation_id " +
             "WHERE p.user_id = ?1 AND p.delete_at IS NULL ORDER BY c.update_at DESC LIMIT 10", nativeQuery = true)
     List<Object[]> findAllByConversation(Long userId);
+
+    @Query(value = "SELECT c.id, c.name, c.new_messages_id, p.last_messages_id, c.image_id, c.create_at, c.update_at " +
+            "FROM conversation c " +
+            "JOIN participants p on c.id = p.conversation_id " +
+            "WHERE c.name LIKE ?2 AND p.user_id = ?1 AND p.delete_at IS NULL ORDER BY c.update_at DESC", nativeQuery = true)
+    List<Object[]> findAllByConversation(Long userId, String name);
+
 }

@@ -1,6 +1,5 @@
 package com.thiendz.wipe.wipeserve.controllers;
 
-import com.thiendz.wipe.wipeserve.data.model.Conversation;
 import com.thiendz.wipe.wipeserve.dto.request.MessagesConversationRequest;
 import com.thiendz.wipe.wipeserve.dto.request.MessagesCreateConversationRequest;
 import com.thiendz.wipe.wipeserve.dto.request.MessagesSendRequest;
@@ -32,7 +31,7 @@ public class MessagesController extends BaseController {
     }
 
     @GetMapping("/search-conversation")
-    public ResponseEntity<Response<MessagesConversationResponse>> searchConversation(@RequestParam String search){
+    public ResponseEntity<Response<List<MessagesConversationResponse>>> searchConversation(@RequestParam String search){
         return ResponseEntity.ok(new Response<>(true, Message.SUCCESS, messagesService.searchConversation(search, getUser())));
     }
 
