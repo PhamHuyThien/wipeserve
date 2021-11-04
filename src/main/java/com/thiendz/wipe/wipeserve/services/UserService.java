@@ -1,5 +1,6 @@
 package com.thiendz.wipe.wipeserve.services;
 
+import com.thiendz.wipe.wipeserve.data.model.File;
 import com.thiendz.wipe.wipeserve.data.model.Profile;
 import com.thiendz.wipe.wipeserve.data.model.User;
 import com.thiendz.wipe.wipeserve.data.repository.jpa.*;
@@ -27,6 +28,9 @@ public class UserService {
     ConversationRepository conversationRepository;
     @Autowired
     ParticipantsRepository participantsRepository;
+    @Autowired
+    FileRepository fileRepository;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -61,8 +65,13 @@ public class UserService {
         if (updateInfoRequest.getAddress() != null && !updateInfoRequest.getAddress().trim().equals("")) {
             profile.setAddress(updateInfoRequest.getAddress());
         }
-        if (updateInfoRequest.getPassword() != null && updateInfoRequest.getPassword().trim().equals("")) {
+        if (updateInfoRequest.getPassword() != null && !updateInfoRequest.getPassword().trim().equals("")) {
             user.setPassword(passwordEncoder.encode(updateInfoRequest.getPassword()));
+        }
+        if(updateInfoRequest.getImage() != null && !updateInfoRequest.getImage().trim().equals("")){
+            File file = new File(updateInfoRequest.getImage());
+            file = fileRepository.save(file);
+            profile.setAvatar(file);
         }
         profile.setFirstName(updateInfoRequest.getFirstName());
         profile.setLastName(updateInfoRequest.getLastName());

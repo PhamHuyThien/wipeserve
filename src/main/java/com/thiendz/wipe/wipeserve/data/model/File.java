@@ -18,4 +18,8 @@ public class File extends Base {
     String name;
     String type;
     long size;
+
+    public File(String url) {
+        this.url = url;
+    }
 }

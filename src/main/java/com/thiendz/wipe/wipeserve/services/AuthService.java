@@ -22,9 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class AuthService implements UserDetailsService {
     @Autowired
@@ -99,7 +96,6 @@ public class AuthService implements UserDetailsService {
             UserInfoResponse userInfoResponse = userRepository.getByUserInfo(user.getId()).orElse(null);
             userInfoResponse.setTotalFriend(friendRepository.countBySenderOrReceiver(user.getId()));
             userInfoResponse.setTotalConversation(participantsRepository.countByUser(user.getId()));
-            HashMap
             return userInfoResponse;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Message.AUTH_TOKEN_EXPIRED);

@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/auth/**",
                         "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs",
                         "/ws/**", "/ws",
-                        "/files/*.*"
+                        "/api/v1/files/*.*"
                 ).permitAll()
                 .anyRequest().authenticated();
     }
