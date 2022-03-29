@@ -110,7 +110,7 @@ public class MessagesService {
             messagesResponse.setAttachments(messagesFileRepository.findAllByMessages(messages.getId())
                     .orElse(new ArrayList<>())
                     .stream()
-                    .map(messageFile -> messageFile.getFile())
+                    .map(MessageFile::getFile)
                     .collect(Collectors.toList()));
             return messagesResponse;
         }).collect(Collectors.toList());
@@ -156,6 +156,7 @@ public class MessagesService {
                     messageFile.setMessages(finalMessages);
                     messageFile.setFile(file);
                     messageFile.setCreateAt(currentTime);
+                    messagesFileRepository.save(messageFile);
                 }).collect(Collectors.toList());
         // cap nhat da xem
         conversation.setNewMessages(messages);
